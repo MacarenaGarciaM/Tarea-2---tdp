@@ -18,7 +18,13 @@ Graph::Graph(std::vector<std::vector<int>> edges) {
         vertexNeighbors[edge[0]].insert(edge[1]);
         vertexNeighbors[edge[1]].insert(edge[0]);
     }
+
+    // Opcional: Inicializar colores a un valor por defecto (-1, por ejemplo)
+    for (const auto& pair : vertexNeighbors) {
+        vertexColor[pair.first] = -1; // -1 indica que no está coloreado
+    }
 }
+
 
 // Método para obtener el número de colores utilizados
 int Graph::getNumberOfColors() {

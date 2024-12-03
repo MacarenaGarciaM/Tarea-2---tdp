@@ -1,71 +1,77 @@
-// ColoringOperation.cpp
-#include <iostream>
-#include <string>
-#include <vector>
-#include <unordered_map>
-#include <set>
-
-using namespace std;
 #include "ColoringOperation.h"
-
-
-// Constructor por defecto
+#include "State.h"
+#include <climits>
 ColoringOperation::ColoringOperation() {
-    best = nullptr;  // Convenimos que nullptr indica que no se ha encontrado ningún estado
+    best = nullptr;        // Inicializamos sin estado conocido
+    upperBound = INT_MAX;  // Límite superior inicial
 }
 
-// Algoritmo de coloreado codicioso
+// Implementación de greedyColoring
 int ColoringOperation::greedyColoring(State* s) {
     while (!s->isAllColored()) {
-        // Seleccionamos un vértice y lo coloreamos
-        int vertex = s->getVertex();  // Necesitamos obtener un vértice no coloreado
+        int vertex = s->getVertex();  // Obtener un vértice no coloreado
 
-        // Encontramos el primer color disponible que sea factible (no igual al color de los vecinos)
+        // Intentar asignar un color factible
         for (int color : s->availableColors) {
             if (s->graph.canColor(vertex, color)) {
                 s->pushColorSelectVertex(vertex, color);
-                break;  // Ya encontramos un color y actualizamos el estado
+                break;
             }
         }
 
-        // Si no se pudo colorear el vértice, asignamos un nuevo color
+        // Si no se pudo colorear, asignar un nuevo color
         if (!s->isVertexColored(vertex)) {
-            int c = s->graph.getNumberOfColors();
-            s->pushColorSelectVertex(vertex, c);
-            s->availableColors.insert(c);
+            int newColor = s->graph.getNumberOfColors();
+            s->pushColorSelectVertex(vertex, newColor);
+            s->availableColors.insert(newColor);
         }
-
-        s->printColor();  // Imprime el estado actual del coloreado
     }
-    
-    best = s;  // El mejor estado es el estado actual
-    return s->graph.getNumberOfColors();  // Retornamos el número de colores utilizados
+
+    return s->graph.getNumberOfColors();  // Retornar el número de colores usados
 }
-
-// Algoritmo de backtracking
-int ColoringOperation::backtrack(State* s) {
-    // Caso base
-    if (s->isAllColored()) {  // Si todos los vértices están coloreados
-        if (best == nullptr || s->graph.getNumberOfColors() < best->graph.getNumberOfColors()) {
-            best = s;  // Actualizamos el mejor estado encontrado
-        }
-        return best->graph.getNumberOfColors();
-    } else {
-        // Caso recursivo
-        int vertex = s->getVertex();  // Obtenemos un vértice no coloreado
-        s->incrementColor();  // Incrementamos el número de colores disponibles
-
-        // Probamos con los colores disponibles
-        for (int color : s->availableColors) {
-            if (s->graph.canColor(vertex, color)) {
-                State* s1 = new State(*s);  // Creamos una copia del estado actual
-                s1->pushColorSelectVertex(vertex, color);  // Coloreamos el vértice
-
-                // Llamada recursiva al backtracking
-                backtrack(s1);
+// Implementación de Branch and Bound
+int ColoringOperation::branchAndBound(State* s) {
+    // Caso base: Si todos los vértices están coloreados
+    if (s->isAllColored()) {
+        int numColors = s->graph.getNumberOfColors();
+        if (numColors < upperBound) {
+            upperBound = numColors;  // Actualizamos el límite superior
+            if (best != nullptr) {
+                delete best;  // Liberamos la memoria del estado anterior
             }
+            best = new State(*s);  // Guardamos el nuevo mejor estado
         }
-
-        return best->graph.getNumberOfColors();  // Retornamos el número de colores del mejor estado
+        return numColors;
     }
+
+    // Seleccionamos un vértice no coloreado
+    int vertex = s->getVertex();
+
+    // Intentamos colorearlo con colores factibles
+    for (int color : s->availableColors) {
+        if (s->graph.canColor(vertex, color)) {
+            State* nextState = new State(*s);
+            nextState->pushColorSelectVertex(vertex, color);
+
+            // Llamada recursiva
+            branchAndBound(nextState);
+
+            delete nextState;  // Liberamos memoria
+        }
+    }
+
+    // Intentamos usar un nuevo color si es necesario
+    int newColor = s->graph.getNumberOfColors();
+    if (newColor < upperBound) {  // Solo consideramos un nuevo color si es factible
+        State* nextState = new State(*s);
+        nextState->pushColorSelectVertex(vertex, newColor);
+        nextState->availableColors.insert(newColor);
+
+        // Llamada recursiva
+        branchAndBound(nextState);
+
+        delete nextState;  // Liberamos memoria
+    }
+
+    return upperBound;  // Retornamos el mejor límite encontrado
 }

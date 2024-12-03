@@ -1,20 +1,18 @@
-// ColoringOperation.h
-#ifndef COLORINGOPERATION_H
-#define COLORINGOPERATION_H
+#ifndef COLORING_OPERATION_H
+#define COLORING_OPERATION_H
 
-#include "State.h"  // Incluir el archivo de cabecera State.h
+#include "State.h"
 
 class ColoringOperation {
 public:
-    // Atributos
+    ColoringOperation();  // Constructor
+    int greedyColoring(State* s);  // Algoritmo codicioso
+    int branchAndBound(State* s);  // Algoritmo de branch and bound
+
     State* best;  // Mejor estado encontrado
 
-    // Constructor
-    ColoringOperation();  // Constructor por defecto
-
-    // Métodos
-    int greedyColoring(State* s);  // Algoritmo de coloreado codicioso
-    int backtrack(State* s);  // Algoritmo de backtracking para coloreado
+private:
+    int upperBound;  // Límite superior para Branch and Bound
 };
 
-#endif // COLORINGOPERATION_H
+#endif // COLORING_OPERATION_H

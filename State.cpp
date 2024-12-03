@@ -4,6 +4,7 @@
 #include <vector>
 #include <unordered_map>
 #include <set>
+#include "ColoringOperation.h"
 
 using namespace std;
 
@@ -21,14 +22,28 @@ State::State(Graph graph) {
     }
 }
 
-// Obtiene un vértice no coloreado
+// En State.cpp: Obtener el vértice con mayor grado de saturación
 int State::getVertex() {
-    auto it = uncoloredVertices.begin();
-    if (it == uncoloredVertices.end()) {
-        return -1;  // Si no hay más vértices, retornamos -1
+    int maxSaturation = -1;
+    int selectedVertex = -1;
+
+    for (int vertex : uncoloredVertices) {
+        int saturation = 0;
+        for (int neighbor : graph.vertexNeighbors[vertex]) {
+            if (isVertexColored(neighbor)) {
+                saturation++;
+            }
+        }
+        if (saturation > maxSaturation) {
+            maxSaturation = saturation;
+            selectedVertex = vertex;
+        }
     }
-    return *it;
+
+    return selectedVertex;
 }
+
+
 
 // Colorea un vértice, lo agrega a los coloreados y lo elimina de los no coloreados
 void State::pushColorSelectVertex(int vertex, int color) {
@@ -60,3 +75,23 @@ void State::incrementColor() {
     int c = graph.getNumberOfColors();
     availableColors.insert(c);
 }
+
+// Calcula el límite inferior basado en un heurístico
+int State::calculateLowerBound() {
+    // Crear una copia del estado actual
+    State temp(*this);
+
+    // Usar el algoritmo codicioso para obtener el número mínimo de colores posible
+    ColoringOperation co;
+    return co.greedyColoring(&temp);  // Devuelve el número de colores usados
+}
+
+
+// Calcula el límite superior usando coloreo codicioso
+int State::calculateUpperBound() {
+    State temp(*this); // Crear copia temporal del estado actual
+    ColoringOperation co;
+    return co.greedyColoring(&temp); // Pasa correctamente el puntero
+}
+
+
