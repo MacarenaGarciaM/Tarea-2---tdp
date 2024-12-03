@@ -29,17 +29,22 @@ int State::getVertex() {
 
     for (int vertex : uncoloredVertices) {
         int saturation = 0;
+        std::set<int> uniqueColors;
         for (int neighbor : graph.vertexNeighbors[vertex]) {
             if (isVertexColored(neighbor)) {
-                saturation++;
+                uniqueColors.insert(graph.vertexColor[neighbor]);
             }
         }
-        if (saturation > maxSaturation) {
+        saturation = uniqueColors.size();
+
+        // Desempate por grado del vértice
+        int degree = graph.vertexNeighbors[vertex].size();
+        if (saturation > maxSaturation || 
+            (saturation == maxSaturation && degree > graph.vertexNeighbors[selectedVertex].size())) {
             maxSaturation = saturation;
             selectedVertex = vertex;
         }
     }
-
     return selectedVertex;
 }
 

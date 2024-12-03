@@ -31,47 +31,42 @@ int ColoringOperation::greedyColoring(State* s) {
 }
 // Implementación de Branch and Bound
 int ColoringOperation::branchAndBound(State* s) {
-    // Caso base: Si todos los vértices están coloreados
+    // Corte temprano si ya superamos el límite superior
+    if (s->graph.getNumberOfColors() >= upperBound) {
+        return upperBound;
+    }
+
     if (s->isAllColored()) {
         int numColors = s->graph.getNumberOfColors();
         if (numColors < upperBound) {
-            upperBound = numColors;  // Actualizamos el límite superior
-            if (best != nullptr) {
-                delete best;  // Liberamos la memoria del estado anterior
-            }
-            best = new State(*s);  // Guardamos el nuevo mejor estado
+            upperBound = numColors;
+            if (best) delete best;
+            best = new State(*s);
         }
         return numColors;
     }
 
-    // Seleccionamos un vértice no coloreado
     int vertex = s->getVertex();
 
-    // Intentamos colorearlo con colores factibles
+    // Intentar con colores existentes primero
     for (int color : s->availableColors) {
         if (s->graph.canColor(vertex, color)) {
             State* nextState = new State(*s);
             nextState->pushColorSelectVertex(vertex, color);
-
-            // Llamada recursiva
             branchAndBound(nextState);
-
-            delete nextState;  // Liberamos memoria
+            delete nextState;
         }
     }
 
-    // Intentamos usar un nuevo color si es necesario
+    // Usar un nuevo color si es necesario
     int newColor = s->graph.getNumberOfColors();
-    if (newColor < upperBound) {  // Solo consideramos un nuevo color si es factible
+    if (newColor < upperBound) {
         State* nextState = new State(*s);
         nextState->pushColorSelectVertex(vertex, newColor);
         nextState->availableColors.insert(newColor);
-
-        // Llamada recursiva
         branchAndBound(nextState);
-
-        delete nextState;  // Liberamos memoria
+        delete nextState;
     }
 
-    return upperBound;  // Retornamos el mejor límite encontrado
+    return upperBound;
 }
