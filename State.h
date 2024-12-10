@@ -10,18 +10,16 @@ public:
     std::set<int> uncoloredVertices;
     std::set<int> coloredVertices;
     std::set<int> availableColors;
+    std::unordered_map<int, int> saturationLevel; // Saturación de cada vértice
 
-    State();                          // Constructor por defecto
-    State(Graph graph);               // Constructor con un grafo
-    int getVertex();                  // Obtiene un vértice no coloreado
+    State();
+    State(Graph graph);
+    int getVertex();
     void pushColorSelectVertex(int vertex, int color);
     bool isVertexColored(int vertex);
     bool isAllColored();
     void printColor();
-    void incrementColor();
-
-    int calculateLowerBound();        // Cálculo del límite inferior
-    int calculateUpperBound();        // Cálculo del límite superior
+    void updateSaturation(int vertex); // Nuevo método para actualizar saturaciones
 };
 
 #endif // STATE_H

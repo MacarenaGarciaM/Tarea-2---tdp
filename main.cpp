@@ -81,11 +81,11 @@ int main() {
     auto stop = high_resolution_clock::now();
 
     // Mostrar resultados
-    cout << "\nNumero de colores (Branch and Bound): " << c << endl;
+    
     if (co.best) {
         co.best->printColor();
     }
-
+    cout << "\nNumero de colores (Branch and Bound): " << c << endl;
     cout << "Tiempo de ejecucion: "
          << duration_cast<milliseconds>(stop - start).count() << " ms." << endl;
         }

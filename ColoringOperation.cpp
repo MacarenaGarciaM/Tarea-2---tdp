@@ -9,7 +9,7 @@ ColoringOperation::ColoringOperation() {
 // Implementación de greedyColoring
 int ColoringOperation::greedyColoring(State* s) {
     while (!s->isAllColored()) {
-        int vertex = s->getVertex();  // Obtener un vértice no coloreado
+        int vertex = s->getVertex();  // Obtener el vértice con mayor saturación
 
         // Intentar asignar un color factible
         for (int color : s->availableColors) {
@@ -29,6 +29,7 @@ int ColoringOperation::greedyColoring(State* s) {
 
     return s->graph.getNumberOfColors();  // Retornar el número de colores usados
 }
+
 // Implementación de Branch and Bound
 int ColoringOperation::branchAndBound(State* s) {
     // Corte temprano si ya superamos el límite superior
