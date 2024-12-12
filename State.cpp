@@ -30,8 +30,24 @@ int State::getVertex() {
             selectedVertex = vertex;
         }
     }
+
+    // Opción de desempate aleatorio (opcional)
+    std::vector<int> candidates;
+    for (int vertex : uncoloredVertices) {
+        int saturation = saturationLevel[vertex];
+        int degree = graph.vertexNeighbors[vertex].size();
+        if (saturation == maxSaturation && degree == graph.vertexNeighbors[selectedVertex].size()) {
+            candidates.push_back(vertex);
+        }
+    }
+
+    if (!candidates.empty()) {
+        selectedVertex = candidates[rand() % candidates.size()]; // Desempate aleatorio
+    }
+
     return selectedVertex;
 }
+
 
 // Actualizar la saturación de los vecinos de un vértice
 void State::updateSaturation(int vertex) {

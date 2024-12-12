@@ -77,10 +77,21 @@ int ColoringOperation::branchAndBound(State* s) {
     return upperBound;
 }
 
+
 int ColoringOperation::calculateLowerBound(State* s) {
-    // Ejemplo: calcular la cota inferior como el tamaño del clique más grande
+    // 1. Tamaño del clique más grande
     int cliqueSize = findLargestClique(s->graph);
-    return std::max(cliqueSize, s->graph.getNumberOfColors());
+
+    // 2. Número mínimo de colores por grado máximo
+    int maxDegree = 0;
+    for (const auto& pair : s->graph.vertexNeighbors) {
+        maxDegree = std::max(maxDegree, static_cast<int>(pair.second.size()));
+    }
+
+    // 3. Coloración greedy parcial
+    int greedyColors = greedyColoring(s);
+
+    return std::max({cliqueSize, maxDegree + 1, greedyColors});
 }
 
 int ColoringOperation::findLargestClique(Graph& graph) {
