@@ -39,7 +39,7 @@ int State::getVertex() {
         int degree = graph.vertexNeighbors[vertex].size();
 
         if (saturation > maxSaturation || 
-            (saturation == maxSaturation && degree > graph.vertexNeighbors[selectedVertex].size())) {
+            (saturation == maxSaturation && static_cast<size_t>(degree) > graph.vertexNeighbors[selectedVertex].size())) {
             maxSaturation = saturation;
             selectedVertex = vertex;
         }
@@ -50,7 +50,7 @@ int State::getVertex() {
     for (int vertex : uncoloredVertices) {
         int saturation = saturationLevel[vertex];
         int degree = graph.vertexNeighbors[vertex].size();
-        if (saturation == maxSaturation && degree == graph.vertexNeighbors[selectedVertex].size()) {
+        if (saturation == maxSaturation && static_cast<size_t>(degree) == graph.vertexNeighbors[selectedVertex].size()){
             candidates.push_back(vertex);
         }
     }

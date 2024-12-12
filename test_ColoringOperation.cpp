@@ -60,7 +60,7 @@ void pruebafindLargestClique() {
     ColoringOperation operacion;
     int Clique = operacion.findLargestClique(grafo);
 
-    cout << "Prueba Encontrar Clique Mas Grande: "
+    cout << "Prueba Encontrar Clique Más Grande: "
          << (Clique == 3 ? "APROBADA" : "FALLIDA")
          << endl;
 }
