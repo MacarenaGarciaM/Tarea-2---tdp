@@ -3,7 +3,7 @@
 #define COLORING_OPERATION_H
 
 #include "State.h"
-
+//Clase que se encarga de realizar la coloración de un grafo mediante los algoritmos de Greedy y Branch and Bound.
 class ColoringOperation {
 public:
     ColoringOperation();  // Constructor
@@ -12,7 +12,6 @@ public:
 
     State* best;  // Mejor estado encontrado
 
-private:
     int upperBound;  // Límite superior para Branch and Bound
     int calculateLowerBound(State* s);  // Cálculo de la cota inferior
     int findLargestClique(Graph& graph);  // Encontrar tamaño del clique más grande

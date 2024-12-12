@@ -1,4 +1,4 @@
-// Graph.cpp
+//Clase que representa un grafo no dirigido y no ponderado, con métodos que calculan el número de colores utilizados y verifican si un vértice puede ser coloreado con un color dado.
 #include <iostream>
 #include <string>
 #include <vector>
@@ -8,34 +8,50 @@
 
 using namespace std;
 
-// Constructor por defecto
+/*
+Entrada: void
+Salida: void
+Descripción: Constructor por defecto de la clase Graph.
+*/
 Graph::Graph() {
 }
 
-// Constructor con lista de aristas
+/*
+Entrada: vector<vector<int>> edges
+Salida: void
+Descripción: Constructor de la clase Graph que recibe una lista de aristas y crea un grafo no dirigido a partir de ellas.
+*/
 Graph::Graph(std::vector<std::vector<int>> edges) {
-    for (const std::vector<int>& edge : edges) {
+    for (const std::vector<int>& edge : edges) { // Crear lista de adyacencia
         vertexNeighbors[edge[0]].insert(edge[1]);
         vertexNeighbors[edge[1]].insert(edge[0]);
     }
 
-    // Opcional: Inicializar colores a un valor por defecto (-1, por ejemplo)
-    for (const auto& pair : vertexNeighbors) {
+   
+    for (const auto& pair : vertexNeighbors) { // Inicializar colores de los vértices en -1
         vertexColor[pair.first] = -1; // -1 indica que no está coloreado
     }
 }
 
 
-// Método para obtener el número de colores utilizados
+/*
+Entrada: void
+Salida: int
+Descripción: Obtiene el número de colores utilizados en la coloración actual del grafo.
+*/
 int Graph::getNumberOfColors() {
-    std::set<int> colors;  // Usamos un set para almacenar colores únicos
-    for (const auto& par : vertexColor) {
+    std::set<int> colors;  // set para almacenar colores únicos
+    for (const auto& par : vertexColor) { 
         colors.insert(par.second);
     }
     return colors.size();
 }
 
-// Método para verificar si un vértice puede ser coloreado con un color dado
+/*
+Entrada: int vertex, int color
+Salida: bool
+Descripción: Consulta si un vértice puede ser coloreado con un color dado, verificando que ninguno de sus vecinos tenga el mismo color.
+*/
 bool Graph::canColor(int vertex, int color) {
     for (int neighbor : vertexNeighbors[vertex]) {
         if (vertexColor.find(neighbor) != vertexColor.end() && 
@@ -46,7 +62,11 @@ bool Graph::canColor(int vertex, int color) {
     return true;
 }
 
-// Método para imprimir el grafo
+/*
+Entrada: void
+Salida: void
+Descripción: Imprime el grafo, mostrando los vértices y sus vecinos.
+*/
 void Graph::printGraph() {
     for (const auto& par : vertexNeighbors) {
         std::cout << par.first << ": ";

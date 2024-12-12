@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <set>
 #include <vector>
+// Clase para representar un grafo no dirigido y no ponderado con métodos para calcular el número de colores utilizados y verificar si un vértice puede ser coloreado con un color dado.
 
 class Graph {
 public:

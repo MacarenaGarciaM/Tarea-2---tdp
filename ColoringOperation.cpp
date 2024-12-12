@@ -2,13 +2,23 @@
 #include "State.h"
 #include <climits>
 #include <algorithm>
+//Clase que se encarga de realizar la coloración de un grafo mediante los algoritmos de Greedy y Branch and Bound.
 
+/*
+Entrada: void
+Salida: void
+Descripción: Constructor de la clase ColoringOperation.
+*/
 ColoringOperation::ColoringOperation() {
     best = nullptr;        // Inicializamos sin estado conocido
     upperBound = INT_MAX;  // Límite superior inicial
 }
 
-// Implementación de greedyColoring
+/*
+Entrada: State* s
+Salida: int
+Descripción: Algoritmo codicioso para colorear un grafo.
+*/
 int ColoringOperation::greedyColoring(State* s) {
     while (!s->isAllColored()) {
         int vertex = s->getVertex();  // Obtener el vértice con mayor saturación
@@ -32,7 +42,11 @@ int ColoringOperation::greedyColoring(State* s) {
     return s->graph.getNumberOfColors();  // Retornar el número de colores usados
 }
 
-// Implementación de Branch and Bound
+/*
+Entrada: State* s
+Salida: int
+Descripción: Algoritmo de Branch and Bound para colorear un grafo.
+*/
 int ColoringOperation::branchAndBound(State* s) {
     // Calcular cota inferior
     int lowerBound = calculateLowerBound(s);
@@ -42,10 +56,10 @@ int ColoringOperation::branchAndBound(State* s) {
 
     // Actualizar límite superior si es óptimo
     if (s->isAllColored()) {
-        int numColors = s->graph.getNumberOfColors();
+        int numColors = s->graph.getNumberOfColors(); // Número de colores usados
         if (numColors < upperBound) {
             upperBound = numColors;
-            if (best) delete best;
+            if (best) delete best; // Liberar memoria si ya había un mejor estado
             best = new State(*s);
         }
         return numColors;
@@ -58,8 +72,8 @@ int ColoringOperation::branchAndBound(State* s) {
     for (int color : s->availableColors) {
         if (s->graph.canColor(vertex, color)) {
             State* nextState = new State(*s);
-            nextState->pushColorSelectVertex(vertex, color);
-            branchAndBound(nextState);
+            nextState->pushColorSelectVertex(vertex, color); // Colorear el vértice
+            branchAndBound(nextState); // Llamada recursiva
             delete nextState;
         }
     }
@@ -68,8 +82,8 @@ int ColoringOperation::branchAndBound(State* s) {
     int newColor = s->graph.getNumberOfColors();
     if (newColor < upperBound) {
         State* nextState = new State(*s);
-        nextState->pushColorSelectVertex(vertex, newColor);
-        nextState->availableColors.insert(newColor);
+        nextState->pushColorSelectVertex(vertex, newColor); // Colorear el vértice
+        nextState->availableColors.insert(newColor); // Agregar el color a los disponibles
         branchAndBound(nextState);
         delete nextState;
     }
@@ -77,43 +91,52 @@ int ColoringOperation::branchAndBound(State* s) {
     return upperBound;
 }
 
-
+/*
+Entrada: State* s
+Salida: int
+Descripción: Cálculo de la cota inferior para el algoritmo de Branch and Bound.
+*/
 int ColoringOperation::calculateLowerBound(State* s) {
-    // 1. Tamaño del clique más grande
+    //Tamaño del clique más grande
     int cliqueSize = findLargestClique(s->graph);
 
-    // 2. Número mínimo de colores por grado máximo
+    //Número mínimo de colores por grado máximo
     int maxDegree = 0;
     for (const auto& pair : s->graph.vertexNeighbors) {
         maxDegree = std::max(maxDegree, static_cast<int>(pair.second.size()));
     }
 
-    // 3. Coloración greedy parcial
+    //Coloración greedy parcial
     int greedyColors = greedyColoring(s);
 
     return std::max({cliqueSize, maxDegree + 1, greedyColors});
 }
 
+/*
+Entrada: Graph& graph
+Salida: int
+Descripción: Encuentra el tamaño del clique más grande en un grafo.
+*/
 int ColoringOperation::findLargestClique(Graph& graph) {
     int maxCliqueSize = 0;
 
-    for (const auto& vertex : graph.vertexNeighbors) {
+    for (const auto& vertex : graph.vertexNeighbors) { // Recorrer todos los vértices
         std::set<int> clique{vertex.first};
 
         for (int neighbor : vertex.second) {
             bool isClique = true;
-            for (int member : clique) {
-                if (graph.vertexNeighbors[member].find(neighbor) == graph.vertexNeighbors[member].end()) {
+            for (int member : clique) { // Verificar si es un clique
+                if (graph.vertexNeighbors[member].find(neighbor) == graph.vertexNeighbors[member].end()) { // No es vecino
                     isClique = false;
                     break;
                 }
             }
-            if (isClique) {
-                clique.insert(neighbor);
+            if (isClique) { 
+                clique.insert(neighbor); // Agregar al clique
             }
         }
 
-        maxCliqueSize = std::max(maxCliqueSize, static_cast<int>(clique.size()));
+        maxCliqueSize = std::max(maxCliqueSize, static_cast<int>(clique.size())); // Actualizar tamaño máximo
     }
 
     return maxCliqueSize;

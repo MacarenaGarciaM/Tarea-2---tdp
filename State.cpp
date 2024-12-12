@@ -2,11 +2,21 @@
 #include <set>
 #include <algorithm>
 #include "State.h"
+//Clase que se encarga de almacenar el estado actual de la coloración de un grafo, así como de realizar operaciones sobre él.
 
-// Constructor por defecto
+
+/*
+Entrada: void
+Salida: void
+Descripción: Constructor por defecto de la clase State.
+*/
 State::State() {}
 
-// Constructor con un grafo dado
+/*
+Entrada: Graph graph
+Salida: void
+Descripción: Constructor de la clase State que recibe un grafo y lo inicializa.
+*/
 State::State(Graph graph) {
     this->graph = graph;
     for (const auto& par : graph.vertexNeighbors) {
@@ -15,7 +25,11 @@ State::State(Graph graph) {
     }
 }
 
-// Obtener el vértice con mayor grado de saturación (Dsatur)
+/*
+Entrada: void
+Salida: int
+Descripción: Obtiene el vértice con mayor saturación y grado máximo, utiliza un algoritmo DSATUR.
+*/
 int State::getVertex() {
     int maxSaturation = -1;
     int selectedVertex = -1;
@@ -49,7 +63,11 @@ int State::getVertex() {
 }
 
 
-// Actualizar la saturación de los vecinos de un vértice
+/* 
+Entrada: int vertex
+Salida: void
+Descripción: Actualiza la saturación de los vecinos de un vértice dado.
+*/
 void State::updateSaturation(int vertex) {
     for (int neighbor : graph.vertexNeighbors[vertex]) {
         if (!isVertexColored(neighbor)) {
@@ -64,7 +82,11 @@ void State::updateSaturation(int vertex) {
     }
 }
 
-// Colorea un vértice, lo agrega a los coloreados y actualiza saturaciones
+/*
+Entrada: int vertex, int color
+Salida: void
+Descripción: Colorea un vértice, lo agrega a los coloreados y actualiza saturaciones
+ */
 void State::pushColorSelectVertex(int vertex, int color) {
     graph.vertexColor[vertex] = color;
     coloredVertices.insert(vertex);
@@ -72,28 +94,40 @@ void State::pushColorSelectVertex(int vertex, int color) {
     updateSaturation(vertex); // Actualizar saturaciones
 }
 
-// Verifica si un vértice está coloreado
+/*
+Entrada: int vertex
+Salida: bool
+Descripción: Verifica si un vértice está coloreado.
+*/
 bool State::isVertexColored(int vertex) {
     return coloredVertices.find(vertex) != coloredVertices.end();
 }
 
-// Verifica si todos los vértices están coloreados
+/*
+Entrada: void
+Salida: bool
+Descripción: Verifica si todos los vértices están coloreados.
+*/
 bool State::isAllColored() {
     return uncoloredVertices.empty();
 }
 
-// Imprime los colores de los vértices
+/*
+Entrada: void
+Salida: void
+Descripción: Imprime los vértices y sus colores.
+*/
 void State::printColor() {
-    // Usamos un vector para almacenar las claves y luego ordenarlas
+    // Vector para almacenar las claves y luego ordenarlas
     std::vector<int> vertices;
     for (const auto& pair : graph.vertexColor) {
         vertices.push_back(pair.first);
     }
 
-    // Ordenamos los vértices en orden creciente
+    // Vértices en orden creciente
     std::sort(vertices.begin(), vertices.end());
 
-    // Imprimimos los colores en orden de los vértices
+    // Imprimir los colores en orden de los vértices
     for (int vertex : vertices) {
         std::cout << vertex << " " << graph.vertexColor[vertex] << "\n";
     }

@@ -10,8 +10,14 @@ using namespace chrono; // Para usar tipos de chrono
 #include "Graph.h"
 #include "State.h"
 #include "ColoringOperation.h"
+//Clase que se encarga de jugar el rol de main, en donde se leen los datos del archivo y se ejecuta el algoritmo de Branch and Bound.
 
-// Función para leer aristas desde un archivo
+
+/*
+Entrada: const string& filename
+Salida: vector<vector<int>>
+Descripción: Lee las aristas de un grafo desde un archivo y las almacena en un vector de vectores.
+*/
 vector<vector<int>> readEdgesFromFile(const string& filename) {
     ifstream inputFile(filename);
     vector<vector<int>> edges;
@@ -23,10 +29,10 @@ vector<vector<int>> readEdgesFromFile(const string& filename) {
 
     int u, v;
     set<int> uniqueVertices; // Para identificar automáticamente los vértices
-    while (inputFile >> u >> v) {
-        edges.push_back({u, v});
-        uniqueVertices.insert(u);
-        uniqueVertices.insert(v);
+    while (inputFile >> u >> v) { // Leer aristas
+        edges.push_back({u, v}); // Almacenar arista
+        uniqueVertices.insert(u); // Almacenar vértices
+        uniqueVertices.insert(v); 
     }
 
     inputFile.close();
@@ -38,21 +44,26 @@ vector<vector<int>> readEdgesFromFile(const string& filename) {
     return edges;
 }
 
+/*
+Entrada: void
+Salida: int
+Descripción: Función principal que ejecuta el algoritmo de Branch and Bound para colorear un grafo. 
+*/
 int main() {
     int choice;
     do {
         // Menú
-        cout << "\n--- Menú ---" << endl;
+        cout << "\n--- Menu ---" << endl;
         cout << "1. Ingresar el nombre del archivo con el grafo" << endl;
         cout << "2. Salir" << endl;
-        cout << "Ingrese su opción: ";
+        cout << "Ingrese su opcion: ";
         cin >> choice;
 
         // Validar entrada
         if (cin.fail() || (choice != 1 && choice != 2)) {
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cerr << "Opción no válida. Intente nuevamente." << endl;
+            cerr << "Opcion no valida. Intente nuevamente." << endl;
             continue;
         }
 
@@ -64,7 +75,7 @@ int main() {
            vector<vector<int>> edges = readEdgesFromFile(filename);
 
     if (edges.empty()) {
-        cout << "No se pudo procesar el archivo o no contiene datos válidos." << endl;
+        cout << "No se pudo procesar el archivo o no contiene datos validos." << endl;
         continue;
     }
 
