@@ -31,9 +31,9 @@ test_coloringoperation: $(TEST_COLORINGOPERATION).cpp test_ColoringOperation.o G
 	$(CXX) $(CXXFLAGS) -o $(TEST_COLORINGOPERATION) $(TEST_COLORINGOPERATION).cpp test_ColoringOperation.o Graph.o State.o
 	./$(TEST_COLORINGOPERATION)
 
-test_state: State.o
-	$(CXX) $(CXXFLAGS) -o State.o
-	./test_Heuristic
+test_state: $(TEST_STATE).cpp State.o Graph.o
+	$(CXX) $(CXXFLAGS) -o $(TEST_STATE) $(TEST_STATE).cpp State.o Graph.o
+	./$(TEST_STATE)
 
 # Regla para ejecutar todos los tests
 test: test_graph test_coloringoperation test_state  
