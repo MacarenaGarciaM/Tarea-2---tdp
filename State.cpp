@@ -1,5 +1,6 @@
 #include <iostream>
 #include <set>
+#include <algorithm>
 #include "State.h"
 
 // Constructor por defecto
@@ -67,8 +68,18 @@ bool State::isAllColored() {
 
 // Imprime los colores de los vértices
 void State::printColor() {
-    for (const auto& par : graph.vertexColor) {
-        std::cout << par.first << " " << par.second << "\n";
+    // Usamos un vector para almacenar las claves y luego ordenarlas
+    std::vector<int> vertices;
+    for (const auto& pair : graph.vertexColor) {
+        vertices.push_back(pair.first);
+    }
+
+    // Ordenamos los vértices en orden creciente
+    std::sort(vertices.begin(), vertices.end());
+
+    // Imprimimos los colores en orden de los vértices
+    for (int vertex : vertices) {
+        std::cout << vertex << " " << graph.vertexColor[vertex] << "\n";
     }
     std::cout << std::endl;
 }

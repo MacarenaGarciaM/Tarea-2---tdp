@@ -1,6 +1,8 @@
 #include "ColoringOperation.h"
 #include "State.h"
 #include <climits>
+#include <algorithm>
+
 ColoringOperation::ColoringOperation() {
     best = nullptr;        // Inicializamos sin estado conocido
     upperBound = INT_MAX;  // Límite superior inicial
@@ -32,11 +34,13 @@ int ColoringOperation::greedyColoring(State* s) {
 
 // Implementación de Branch and Bound
 int ColoringOperation::branchAndBound(State* s) {
-    // Corte temprano si ya superamos el límite superior
-    if (s->graph.getNumberOfColors() >= upperBound) {
-        return upperBound;
+    // Calcular cota inferior
+    int lowerBound = calculateLowerBound(s);
+    if (lowerBound >= upperBound) {
+        return upperBound; // Podar rama si la cota inferior supera la superior
     }
 
+    // Actualizar límite superior si es óptimo
     if (s->isAllColored()) {
         int numColors = s->graph.getNumberOfColors();
         if (numColors < upperBound) {
@@ -47,6 +51,7 @@ int ColoringOperation::branchAndBound(State* s) {
         return numColors;
     }
 
+    // Obtener vértice a colorear
     int vertex = s->getVertex();
 
     // Intentar con colores existentes primero
@@ -59,7 +64,7 @@ int ColoringOperation::branchAndBound(State* s) {
         }
     }
 
-    // Usar un nuevo color si es necesario
+    // Intentar con un nuevo color si es necesario
     int newColor = s->graph.getNumberOfColors();
     if (newColor < upperBound) {
         State* nextState = new State(*s);
@@ -70,4 +75,35 @@ int ColoringOperation::branchAndBound(State* s) {
     }
 
     return upperBound;
+}
+
+int ColoringOperation::calculateLowerBound(State* s) {
+    // Ejemplo: calcular la cota inferior como el tamaño del clique más grande
+    int cliqueSize = findLargestClique(s->graph);
+    return std::max(cliqueSize, s->graph.getNumberOfColors());
+}
+
+int ColoringOperation::findLargestClique(Graph& graph) {
+    int maxCliqueSize = 0;
+
+    for (const auto& vertex : graph.vertexNeighbors) {
+        std::set<int> clique{vertex.first};
+
+        for (int neighbor : vertex.second) {
+            bool isClique = true;
+            for (int member : clique) {
+                if (graph.vertexNeighbors[member].find(neighbor) == graph.vertexNeighbors[member].end()) {
+                    isClique = false;
+                    break;
+                }
+            }
+            if (isClique) {
+                clique.insert(neighbor);
+            }
+        }
+
+        maxCliqueSize = std::max(maxCliqueSize, static_cast<int>(clique.size()));
+    }
+
+    return maxCliqueSize;
 }

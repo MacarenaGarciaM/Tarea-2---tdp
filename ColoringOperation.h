@@ -1,3 +1,4 @@
+// ColoringOperation.h
 #ifndef COLORING_OPERATION_H
 #define COLORING_OPERATION_H
 
@@ -13,6 +14,8 @@ public:
 
 private:
     int upperBound;  // Límite superior para Branch and Bound
+    int calculateLowerBound(State* s);  // Cálculo de la cota inferior
+    int findLargestClique(Graph& graph);  // Encontrar tamaño del clique más grande
 };
 
 #endif // COLORING_OPERATION_H
