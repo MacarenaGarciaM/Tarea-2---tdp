@@ -21,7 +21,7 @@ void pruebaGetVertex() {
     State estado(grafo);
 
     int vertice = estado.getVertex();
-    cout << "Prueba Obtener Vértice con Mayor Saturación: "
+    cout << "Prueba Obtener Vertice con Mayor Saturacion: "
          << (vertice >= 0 && vertice <= 2 ? "APROBADA" : "FALLIDA")
          << endl;
 }
@@ -34,7 +34,7 @@ void pruebaColorVertex() {
     int vertice = estado.getVertex();
     estado.pushColorSelectVertex(vertice, 1);
 
-    cout << "Prueba Colorear Vértice: "
+    cout << "Prueba Colorear Vertice: "
          << (estado.isVertexColored(vertice) ? "APROBADA" : "FALLIDA")
          << endl;
 }
@@ -50,7 +50,7 @@ void pruebaActualizarSaturacion() {
     int vecino = (vertice + 1) % 3;
     int saturacion = estado.saturationLevel[vecino];
 
-    cout << "Prueba Actualizar Saturación: "
+    cout << "Prueba Actualizar Saturacion: "
          << (saturacion > 0 ? "APROBADA" : "FALLIDA")
          << endl;
 }
@@ -66,7 +66,7 @@ void pruebaisAllColored() {
         estado.pushColorSelectVertex(vertice, color);
     }
 
-    cout << "Prueba Todos los Vértices Coloreados: "
+    cout << "Prueba Todos los Vertices Coloreados: "
          << (estado.isAllColored() ? "APROBADA" : "FALLIDA")
          << endl;
 }

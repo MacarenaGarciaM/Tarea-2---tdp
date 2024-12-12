@@ -25,7 +25,7 @@ void pruebagetNumberOfColors() {
     Graph grafo(aristas);
 
     int coloresIniciales = grafo.getNumberOfColors();
-    cout << "Prueba Obtener Número de Colores (Inicial): "
+    cout << "Prueba Obtener Numero de Colores (Inicial): "
          << (coloresIniciales == 1 ? "APROBADA" : "FALLIDA")
          << endl;
 }

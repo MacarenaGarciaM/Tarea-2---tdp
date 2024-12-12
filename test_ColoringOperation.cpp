@@ -1,7 +1,9 @@
 #include "ColoringOperation.h"
 #include "State.h"
+#include "Graph.h"
 #include <iostream>
 #include <vector>
+#include <climits>
 
 using namespace std;
 
@@ -58,7 +60,7 @@ void pruebafindLargestClique() {
     ColoringOperation operacion;
     int Clique = operacion.findLargestClique(grafo);
 
-    cout << "Prueba Encontrar Clique Más Grande: "
+    cout << "Prueba Encontrar Clique Mas Grande: "
          << (Clique == 3 ? "APROBADA" : "FALLIDA")
          << endl;
 }
